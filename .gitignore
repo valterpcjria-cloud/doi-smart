@@ -1,0 +1,9 @@
+node_modules/
+release-*/
+deploy-doi-smart-*/
+*.zip
+.env
+.DS_Store
+dist/
+deploy/config.php
+config.php

@@ -1,0 +1,7 @@
+{
+  "name": "DOI Smart 2.0",
+  "description": "Sistema inteligente para extração de dados de escrituras e transmissão automatizada de DOI para a Receita Federal do Brasil.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

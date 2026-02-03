@@ -1,0 +1,55 @@
+# Apache Rewrite Rules para DOI Smart 2.0
+# Este arquivo configura o roteamento para SPA + API
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Não reescrever arquivos existentes
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    
+    # Redirecionar chamadas de API para api.php
+    RewriteRule ^api/(.*)$ api.php [L,QSA]
+    
+    # Redirecionar todas as outras rotas para index.html (SPA)
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+# Configurações de segurança
+<IfModule mod_headers.c>
+    # Segurança básica
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Cache para assets estáticos
+    <FilesMatch "\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$">
+        Header set Cache-Control "max-age=31536000, public"
+    </FilesMatch>
+    
+    # Sem cache para HTML e PHP
+    <FilesMatch "\.(html|php)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+    </FilesMatch>
+</IfModule>
+
+# Proteção de arquivos sensíveis
+<FilesMatch "(^\.|\.(php|log|config)$)" >
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>
+
+# Permitir apenas api.php e script de atualização
+<FilesMatch "^(api|update_db_v2_1_20)\.php$">
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
+</FilesMatch>
+
+# Compressão GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json
+</IfModule>
